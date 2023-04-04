@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+        <title>Кабель-генератор</title>
+        <!--- Link to the last version of BabylonJS --->
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+        <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <style>	
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="renderCanvas"></canvas>
+        <script>
+            window.addEventListener('DOMContentLoaded', function() {
+
+				   function isEven(n) {
+    return n % 2 == 0;
+}
+
+function getParameterByName(name, url) {
+    if (!url)
+        url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'), results = regex.exec(url);
+    if (!results)
+        return null;
+    if (!results[2])
+        return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+					var canvas = document.getElementById('renderCanvas');
+					var engine = new BABYLON.Engine(canvas, true);
+
+					// createScene function that creates and return the scene
+
+					var delayCreateScene = function() {
+						// Create a scene.
+						var scene = new BABYLON.Scene(engine);
+						var camera = new BABYLON.ArcRotateCamera("Camera", -Math.PI / 4, Math.PI / 2.5, 300, BABYLON.Vector3.Zero(), scene);
+camera.attachControl(canvas, true);
+camera.minZ = 0.1;
+
+// scene.imageProcessingConfiguration.exposure = 1.0;
+// scene.imageProcessingConfiguration.contrast = 1.1;
+// create a basic light, aiming 0,1,0 - meaning, to the sky
+
+/*          var hdrSkybox = BABYLON.Mesh.CreateBox("hdrSkyBox", 1000.0, scene);
+var hdrSkyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+hdrSkyboxMaterial.backFaceCulling = false;
+hdrSkyboxMaterial.diffuseColor = new BABYLON.Color3(1, 1, 1);
+hdrSkyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+hdrSkyboxMaterial.groundColor = new BABYLON.Color3(0, 1, 0);
+hdrSkyboxMaterial.disableLighting = true;
+hdrSkybox.material = hdrSkyboxMaterial;
+hdrSkybox.infiniteDistance = true;*/
+
+//      new BABYLON.PointLight("point", new BABYLON.Vector3(0,0,0), scene);               
+				   
+				  if (getParameterByName('helix') !== null) {
+    pathHelix = [];
+    for (var i = 0; i <= 60; i++) {
+        var v = 2.0 * Math.PI * i / 20;
+        pathHelix.push(new BABYLON.Vector3(3 * Math.cos(v), i / 4, 3 * Math.sin(v)));
+    }
+
+    //Show single path
+    var lines = BABYLON.MeshBuilder.CreateLines("helixLines", {
+        points : pathHelix
+    }, scene);
+
+    //Create the Ribbon around the single path
+    var helix = BABYLON.MeshBuilder.CreateRibbon("helix", {
+        pathArray : [pathHelix],
+        offset : 20
+    }, scene);
+    helix.material = pvh;
+    helix.material.backFaceCulling = false;
+
+}								 
+				 
+				  var light0 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
+light0.diffuse = new BABYLON.Color3(1, 0, 0);
+light0.specular = new BABYLON.Color3(0, 1, 0);
+light0.groundColor = new BABYLON.Color3(0, 1, 0); 
+				  
+				  var copper = new BABYLON.StandardMaterial("copper", scene);
+copper.diffuseTexture = new BABYLON.Texture("./copper.jpg", scene);
+copper.bumpTexture = new BABYLON.Texture("./NormalMap.png", scene);
+
+var nullLinePBR = new BABYLON.PBRMaterial("pbr", scene);
+nullLinePBR.albedoColor = new BABYLON.Color3(210, 105, 30);
+//    nullLinePBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+nullLinePBR.metallic = 1.1;
+nullLinePBR.roughness = 0.09;
+//     nullLinePBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+//      nullLinePBR.bumpTexture.level = 0.04;
+//    nullLinePBR.bumpTexture.vAng = 90;
+//    nullLinePBR.bumpTexture.wAng = 90;
+
+var plusLinePBR = new BABYLON.PBRMaterial("pbrpl", scene);
+//  plusLinePBR.diffuseColor = new BABYLON.Color3(1.0,0.0, 1.0);
+plusLinePBR.albedoColor = new BABYLON.Color3(6, 6, 255);
+plusLinePBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+plusLinePBR.metallic = 1.1;
+plusLinePBR.roughness = 0.09;
+plusLinePBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+plusLinePBR.bumpTexture.level = 0.04;
+plusLinePBR.bumpTexture.vAng = 90;
+plusLinePBR.bumpTexture.wAng = 90;
+
+var pvhPBR = new BABYLON.PBRMaterial("pbrPvh", scene);
+pvhPBR.diffuseColor = new BABYLON.Color3(213, 213, 113);
+//pvhPBR.albedoColor =  new BABYLON.Color3(1.0, 0.7, 0.7);
+pvhPBR.reflectivityColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+pvhPBR.metallic = 0.3;
+pvhPBR.roughness = 1.0;
+
+var pvh = new BABYLON.StandardMaterial('pvh', scene);
+pvh.diffuseColor = new BABYLON.Color3(0.53, 0.53, 0.53);
+
+//  pvhPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+
+var alumPBR = new BABYLON.PBRMetallicRoughnessMaterial("pbrPvh", scene);
+alumPBR.baseColor = new BABYLON.Color3(0.633, 0.635, 0.637)
+//     alumPBR.albedoColor = new BABYLON.Color3(0.9, 0.9, 0.9);
+alumPBR.reflectivityColor = new BABYLON.Color3(0.7, 0.7, 0.7);
+alumPBR.metallic = 5.0;
+alumPBR.roughness = 0.5;
+alumPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+alumPBR.bumpTexture.vAng = 80;
+alumPBR.bumpTexture.wAng = 100;
+alumPBR.bumpTexture.level = 10.5;
+
+var copperPBR = new BABYLON.PBRMetallicRoughnessMaterial("pbrCop", scene);
+// var copperPBR = new BABYLON.PBRMaterial("pbrCop", scene);
+copperPBR.baseTexture = new BABYLON.Texture("./copper.jpg", scene);
+copperPBR.albedoTexture = new BABYLON.Texture("./copper.jpg", scene);
+copperPBR.reflectivityTexture = new BABYLON.Texture("./copper.jpg", scene);
+// copperPBR.albedoColor = new BABYLON.Color3(0.5, 0.150, 0.16);
+copperPBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+copperPBR.metallic = 3.0;
+copperPBR.roughness = .5;
+copperPBR.reflectivityTexture.wAng = 80;
+copperPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+copperPBR.bumpTexture.vAng = 80;
+copperPBR.bumpTexture.wAng = 100;
+copperPBR.bumpTexture.level = 1;
+
+var black = new BABYLON.StandardMaterial("black", scene);
+black.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+black.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+black.bumpTexture.vAng = 70;
+black.bumpTexture.wAng = 90;
+
+var blacknobump = new BABYLON.StandardMaterial("black", scene);
+blacknobump.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+var blackPBR = new BABYLON.PBRMaterial("pbr", scene);
+blackPBR.albedoColor = new BABYLON.Color3(1.0, 0.766, 0.336);
+blackPBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.336);
+blackPBR.metallic = 1.0;
+blackPBR.roughness = 0.1;
+blackPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+blackPBR.bumpTexture.vAng = 50;
+blackPBR.bumpTexture.wAng = 90;
+blackPBR.bumpTexture.level = 1; 
+				  
+				  var cutCount = '';
+var cutDiam = '';
+var cutMat = '';
+var cutType = '';
+
+var cutFillRad = '';
+var cutFillMat = '';
+var cutFillMatArr = new Array();
+var cutFillLen = '';
+
+var bodyLen = '';
+var bodyDiam = '';
+var bodyDiamTop = '';
+var bodyDiamBot = '';
+var bodyMaterial = '';
+
+var fillDiam = '';
+var fillDiamTop = '';
+var fillDiamBot = '';
+var fillMaterial = '';
+var fillLen = '';
+
+var preset = getParameterByName('preset'); 
+										  
+				  if (preset == 'onecoppvhblack') {
+    cutCount = 1;
+    fillDiam = 0.3;
+    fillDiamTop = fillDiam;
+    fillDiamBot = fillDiam;
+    cutDiam = 0.2;
+    cutFillRad = 0.27;
+    bodyDiam = 0.4;
+    bodyDiamTop = bodyDiam;
+    bodyDiamBot = bodyDiam;
+    cutType = 'copper';
+    fillmat = pvhPBR;
+    cutFillMat = plusLinePBR;
+    cutFillMatArr[0] = 'plusLinePBR';
+    bodyMaterial = blackPBR;
+}
+
+if (preset == 'onecoppvhpvh') {
+    cutCount = 1;
+    fillDiam = 0.3;
+    fillDiamTop = fillDiam;
+    fillDiamBot = fillDiam;
+    cutDiam = 0.2;
+    cutFillRad = 0.27;
+    bodyDiam = 0.4;
+    bodyDiamTop = bodyDiam;
+    bodyDiamBot = bodyDiam;
+    cutType = 'copper';
+    fillmat = pvhPBR;
+    cutFillMat = nullLinePBR;
+    cutFillMatArr[0] = 'plusLinePBR';
+    bodyMaterial = pvhPBR;
+}
+
+if (preset === 'onealumpvhblack') {
+    cutCount = 1;
+    fillDiam = 0.3;
+    fillDiamTop = fillDiam;
+    fillDiamBot = fillDiam;
+    cutDiam = 0.2;
+    cutFillRad = 0.27;
+    bodyDiam = 0.4;
+    bodyDiamTop = bodyDiam;
+    bodyDiamBot = bodyDiam;
+    cutType = 'alum';
+    fillMaterial = pvhPBR;
+    bodyMaterial = blackPBR;
+    cutFillMat = nullLinePBR;
+    cutFillMatArr[0] = plusLinePBR;
+}
+
+if (preset == 'onealumpvhpvh') {
+    cutCount = 1;
+    fillDiam = 0.3;
+    fillDiamTop = fillDiam;
+    fillDiamBot = fillDiam;
+    cutDiam = 0.2;
+    cutFillRad = 0.27;
+    bodyDiam = 0.4;
+    bodyDiamTop = bodyDiam;
+    bodyDiamBot = bodyDiam;
+    cutType = 'alum';
+    fillMaterial = pvhPBR;
+    bodyMaterial = pvhPBR;
+    cutFillMat = nullLinePBR;
+    cutFillMatArr[0] = plusLinePBR;
+}    
+				  
+				  if ( typeof preset !== 'object' || preset !== null) {
+    if ( typeof getParameterByName('cutfilllen') !== 'object' || getParameterByName('cutfilllen') !== null) {
+        cutFillLen = getParameterByName('cutfilllen');
+    }
+
+    if ( typeof getParameterByName('filllen') !== 'object' || getParameterByName('filllen') !== null) {
+        fillLen = getParameterByName('filllen');
+    }
+
+    if ( typeof getParameterByName('c') !== 'object' || getParameterByName('c') !== null) {
+        cutCount = getParameterByName('c');
+    }
+    if ( typeof getParameterByName('cutdiam') !== 'object' || getParameterByName('cutdiam') !== null) {
+        cutDiam = getParameterByName('cutdiam');
+    }
+    if ( typeof getParameterByName('cutfillmat') !== 'object' || getParameterByName('cutfillmat') !== null) {
+        cutFillMat = getParameterByName('cutfillmat');
+    }
+    if ( typeof getParameterByName('cutfillrad') !== 'object' || getParameterByName('cutfillrad') !== null) {
+        cutFillRad = getParameterByName('cutfillrad')
+    }
+    if ( typeof getParameterByName('cutmat') !== 'object' || getParameterByName('cutmat') !== null) {
+        cutMat = getParameterByName('cutmat')
+    }
+    if ( typeof getParameterByName('cuttype') !== 'object' || getParameterByName('cuttype') !== null) {
+        cutType = getParameterByName('cuttype')
+    }
+    if ( typeof getParameterByName('bodylen') !== 'object' || getParameterByName('bodylen') !== null) {
+        bodyLen = getParameterByName('bodylen')
+    }
+    if ( typeof getParameterByName('bodydiam') !== 'object' || getParameterByName('bodydiam') !== null) {
+        bodyDiam = getParameterByName('bodydiam')
+    }
+    if ( typeof getParameterByName('bodydiamtop') !== 'object' || getParameterByName('bodydiamtop') !== null) {
+        bodyDiamTop = getParameterByName('bodydiamtop')
+    }
+    if ( typeof getParameterByName('bodydiambot') !== 'object' || getParameterByName('bodydiambot') !== null) {
+        bodyDiamBot = getParameterByName('bodydiambot')
+    }
+
+    if ( typeof getParameterByName('bodymat') !== 'object' || getParameterByName('bodymat') !== null) {
+        bodyMaterial = getParameterByName('bodymat')
+    }
+
+    if ( typeof getParameterByName('filldiam') !== 'object' || getParameterByName('filldiam') !== null) {
+        fillDiam = getParameterByName('filldiam')
+    }
+    if ( typeof getParameterByName('filldiamtop') !== 'object' || getParameterByName('filldiamtop') !== null) {
+        fillDiamTop = getParameterByName('filldiamtop')
+    }
+
+    if ( typeof getParameterByName('filldiambot') !== 'object' || getParameterByName('filldiambot') !== null) {
+        fillDiamBot = getParameterByName('filldiambot')
+    }
+
+    if ( typeof getParameterByName('fillmat') !== 'object' || getParameterByName('fillmat') !== null) {
+        fillMaterial = getParameterByName('fillmat')
+    }
+
+} else {
+
+    cutCount = getParameterByName('c');
+    cutDiam = getParameterByName('cutdiam');
+    cutFillRad = getParameterByName('cutfillrad');
+    cutFillMat = getParameterByName('cutfilmat');
+    cutFillMatArr = new Array();
+    cutMat = getParameterByName('cutmat');
+    cutType = getParameterByName('cuttype');
+
+    bodyLen = getParameterByName('bodylen');
+    bodyDiam = getParameterByName('bodydiam');
+    bodyDiamTop = getParameterByName('bodydiamtop');
+    bodyDiamBot = getParameterByName('bodydiambot');
+    bodyMaterial = getParameterByName('bodymat');
+
+    fillDiam = getParameterByName('filldiam');
+    fillDiamTop = getParameterByName('filldiamtop');
+    fillDiamBot = getParameterByName('filldiambot');
+    fillMaterial = getParameterByName('fillmat');
+    fillLen = getParameterByName('filllen');
+
+}
+
+console.log( typeof bodyMaterial + ' ' + bodyMaterial);
+
+if ( typeof bodyMaterial !== 'string' || bodyMaterial == '') {
+    bodyMaterial = blackPBR;
+}
+
+if ( typeof bodyDiam === 'object' || bodyDiam === null) {
+    bodyDiam = 0.9;
+}
+
+if ( typeof bodyDiamTop === 'object' || bodyDiamTop === null) {
+    bodyDiamTop = bodyDiam;
+}
+
+if ( typeof bodyDiamBot === 'object' || bodyDiamBot === null) {
+    bodyDiamBot = bodyDiam;
+}
+
+if ( typeof fillMaterial == 'object' || fillMaterial === null) {
+    fillMaterial = pvhPBR;
+}
+
+if ( typeof fillDiam === 'object' || fillDiam === null) {
+    fillDiam = 0.6;
+}
+
+if ( typeof fillDiamTop === 'object' || fillDiamTop === null) {
+    fillDiamTop = fillDiam;
+}
+
+if ( typeof fillDiamBot === 'object' || fillDiamBot === null) {
+    fillDiamBot = fillDiam;
+}
+
+if ( typeof bodyLen !== 'string' || bodyLen == null) {
+    bodyLen = 2;
+}
+
+if ( typeof cutFillLen !== 'string' || cutFillLen === null) {
+    cutFillLen = 0.3;
+}
+
+if ( typeof fillLen !== 'object' || fillLen === null) {
+    fillLen = 0.3;
+}
+
+if ( typeof cutDiam === 'object' || cutDiam === null) {
+    cutDiam = 0.3;
+}
+if ( typeof cutFillRad === 'object' || cutFillRad === null) {
+    cutFillRad = 0.5;
+}
+
+if (bodyDiam > bodyDiamTop & bodyDiam > bodyDiamBot) {
+    bodyDiamTop = bodyDiam;
+    bodyDiamBot = bodyDiam;
+}
+
+if (fillDiam > fillDiamTop & fillDiam > fillDiamBot) {
+    fillDiamTop = fillDiam;
+    fillDiamBot = fillDiam;
+}
+
+/*     if(cutFillRad>cutFillTop & cutDiam>cutDiamBot)
+ {
+ cutFillTop=cutDiam;
+ cutFillBot=cutDiam;
+ }*/
+console.log('body : ' + bodyMaterial);
+console.log('fill: ' + fillMaterial); 
+						
+				  var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+var bodyMain = BABYLON.MeshBuilder.CreateCylinder("bodyMain", {
+    height : bodyLen,
+    diameterTop : bodyDiamTop,
+    diameterBottom : bodyDiamBot,
+    tessellation : 32
+}, scene);
+bodyMain.lookAt(new BABYLON.Vector3(0, 90, 0));
+globMeshes = new Array();
+globCuts = new Array();
+bodyMain.material = eval(bodyMaterial);
+
+if (getParameterByName('upd') == 1) {
+    var filling = BABYLON.MeshBuilder.CreateCylinder("bodyMain", {
+        height : fillLen,
+        diameterTop : fillDiamTop,
+        diameterBottom : fillDiamBot,
+        tessellation : 32
+    }, scene);
+    filling.lookAt(new BABYLON.Vector3(0, 90, 0));
+    filling.material = eval(fillMaterial);
+    filling.position.x = filling.position.x + 1;
+    filling.position.y = filling.position.y - 0.01;
+
+    for ( i = 1; i <= parseInt(cutCount); i++) {
+
+        if ( typeof cutFillMatArr[i] === 'undefined' || cutFillMatArr[i] === null) {
+            cutFillMatArr[i] = getParameterByName('cfm' + i);
+            //                              console.log(typeof cutFillMatArr[i]);
+        }
+        // console.log(typeof cutFillMatArr[i]);
+        if ( typeof cutFillMatArr[i] === 'object' || cutFillMatArr[i] === null) {
+            cutFillMatArr[i] = 'nullLinePBR';
+        }
+        if (cutCount == 1) {
+            globMeshes[i] = BABYLON.MeshBuilder.CreateCylinder("fillCut", {
+                height : 0.3,
+                diameterTop : cutFillRad,
+                diameterBottom : cutFillRad,
+                tessellation : 32
+            }, scene);
+            globCuts[i] = BABYLON.MeshBuilder.CreateCylinder("cut", {
+                height : 0.8,
+                diameterTop : cutDiam,
+                diameterBottom : cutDiam,
+                tessellation : 32
+            }, scene);
+
+        } else {
+            globMeshes[i] = BABYLON.MeshBuilder.CreateCylinder("fillCut", {
+                height : 0.3,
+                diameterTop : cutFillRad / 2,
+                diameterBottom : cutFillRad / 2,
+                tessellation : 32
+            }, scene);
+            globCuts[i] = BABYLON.MeshBuilder.CreateCylinder("cut", {
+                height : 0.8,
+                diameterTop : cutDiam / 2,
+                diameterBottom : cutDiam / 2,
+                tessellation : 32
+            }, scene);
+            x_oncircle = cutFillRad / 2 * Math.cos(45 * (i));
+            y_oncircle = cutFillRad / 2 * Math.sin(45 * (i));
+            globMeshes[i].position.y = x_oncircle;
+            globMeshes[i].position.z = y_oncircle;
+            globCuts[i].position.y = x_oncircle;
+            globCuts[i].position.z = y_oncircle;
+
+        }
+
+        //   globCuts[i].lookAt(new BABYLON.Vector3(90, 10000, 0));
+        //  globMeshes[i].lookAt(new BABYLON.Vector3(90,10000, 0));
+        globCuts[i].rotate(new BABYLON.Vector3(0, 0, 1), 1.58, BABYLON.Space.WORLD);
+        globMeshes[i].rotate(new BABYLON.Vector3(0, 0, 1), 1.58, BABYLON.Space.WORLD);
+        globCuts[i].position.x = globCuts[i].position.x + 1.6;
+        globMeshes[i].position.x = globMeshes[i].position.x + 1.3;
+        globMeshes[i].position.z = bodyMain.position.z;
+        if (i == 1 & cutCount == 1) {
+            var direction = new BABYLON.Vector3(0, 0, 0);
+            direction.normalize();
+            globCuts[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+            globMeshes[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+        } else {
+            if (i == 1) {
+                var direction = new BABYLON.Vector3(0, 0, -(bodyMain.position.z + cutFillRad / 2));
+                direction.normalize();
+                globCuts[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+                globMeshes[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+            }
+            if (i == 2) {
+                var direction = new BABYLON.Vector3(0, 0, bodyMain.position.z + cutFillRad / 2);
+                direction.normalize();
+                globCuts[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+                globMeshes[i].translate(direction, 0.112, BABYLON.Space.WORLD);
+            }
+
+        }
+        globCuts[i].position.z = globMeshes[i].position.z;
+        if (globMeshes[i] !== null & cutFillMatArr[i] === null) {
+            cutFillMatArr[i] = 'nullLinePBR';
+        }
+
+        globMeshes[i].material = eval(cutFillMatArr[i]);
+        // evil thing...
+        if (cutType == 'alum') {
+            globCuts[i].material = alumPBR;
+        } else {
+            globCuts[i].material = copperPBR;
+        }
+        //end for
+    }
+
+}
+                    
+                    scene.createDefaultCameraOrLight(true, true, true);
+                    return scene;
+                };
+
+                // call the createScene function
+                var scene = delayCreateScene();
+
+                // run the render loop
+                engine.runRenderLoop(function() {
+                    scene.render();
+                    // dCR.render();
+                });
+
+                // the canvas/window resize event handler
+                window.addEventListener('resize', function() {
+                    engine.resize();
+                });
+
+            });
+        </script>
+    </body>
+</html>

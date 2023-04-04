@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+        <title>Babylon - Getting Started</title>
+        <!--- Link to the last version of BabylonJS --->
+        <script src="https://cdn.babylonjs.com/babylon.js"></script>
+        <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+        <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+        <style>
+            html, body {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            #renderCanvas {
+                width: 100%;
+                height: 100%;
+                touch-action: none;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="renderCanvas"></canvas>
+        <script>
+window.addEventListener('DOMContentLoaded', function() {
+    
+        
+        function isEven(n) {
+   return n % 2 == 0;
+}
+
+
+        
+        function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+       }
+        
+        var canvas = document.getElementById('renderCanvas');
+        var engine = new BABYLON.Engine(canvas, true);
+
+        // createScene function that creates and return the scene
+                
+        var delayCreateScene = function() {
+        // Create a scene.
+        var scene = new BABYLON.Scene(engine);
+        var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
+        camera.setTarget(BABYLON.Vector3.Zero());
+
+        // attach the camera to the canvas
+        camera.attachControl(canvas, true);
+
+        // create a basic light, aiming 0,1,0 - meaning, to the sky
+        var light0 = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(-1, 1, 0), scene);
+        light0.diffuse = new BABYLON.Color3(1, 0, 0);
+        light0.specular = new BABYLON.Color3(0, 1, 0);
+        light0.groundColor = new BABYLON.Color3(0, 1, 0);
+        // Create a default skybox with an environment.
+
+        var copper = new BABYLON.StandardMaterial("copper", scene);
+        copper.diffuseTexture = new BABYLON.Texture("./copper.jpg", scene);
+        copper.bumpTexture = new BABYLON.Texture("./NormalMap.png", scene);
+        
+        
+        var nullLinePBR= new BABYLON.PBRMaterial("pbr",scene);
+        nullLinePBR.albedoColor = new BABYLON.Color3(210,105,30);
+        nullLinePBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+       nullLinePBR.metallic = 1.1;
+         nullLinePBR.roughness = 0.09;
+        nullLinePBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        nullLinePBR.bumpTexture.level = 0.04;
+         nullLinePBR.bumpTexture.vAng = 90;
+        nullLinePBR.bumpTexture.wAng = 90;
+        
+        
+        
+        var plusLinePBR= new BABYLON.PBRMaterial("pbrpl",scene);
+      //  plusLinePBR.diffuseColor = new BABYLON.Color3(1.0,0.0, 1.0);
+       plusLinePBR.albedoColor = new BABYLON.Color3(6,6,255);
+        plusLinePBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+       plusLinePBR.metallic = 1.1;
+         plusLinePBR.roughness = 0.09;
+        plusLinePBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        plusLinePBR.bumpTexture.level = 0.04;
+         plusLinePBR.bumpTexture.vAng = 90;
+        plusLinePBR.bumpTexture.wAng = 90;
+        
+        
+        var pvhPBR= new BABYLON.PBRMaterial("pbrPvh",scene);
+        pvhPBR.diffuseColor = new BABYLON.Color3(213,213, 113);
+        //pvhPBR.albedoColor =  new BABYLON.Color3(1.0, 0.7, 0.7);
+        pvhPBR.reflectivityColor = new BABYLON.Color3(0.3, 0.3, 0.3);
+        pvhPBR.metallic = 0.0;
+        pvhPBR.roughness = 1.0;
+        pvhPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        
+        var alumPBR= new BABYLON.PBRMaterial("pbrPvh",scene);
+        //alumPBR.diffuseColor = new BABYLON.Color3(223,223, 223);
+        alumPBR.albedoColor =  new BABYLON.Color3(0.9, 0.9, 0.9);
+        alumPBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+        alumPBR.metallic = 30.0;
+        alumPBR.roughness = 0.33;
+        alumPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        alumPBR.bumpTexture.level = 0.05;
+        
+        
+
+        var copperPBR = new BABYLON.PBRMaterial("pbrCop", scene);
+        copperPBR.albedoTexture = new BABYLON.Texture("./copper.jpg", scene);
+        copperPBR.reflectivityTexture = new BABYLON.Texture("./copper.jpg", scene);
+        // copperPBR.albedoColor = new BABYLON.Color3(0.5, 0.150, 0.16);
+        copperPBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.736);
+        copperPBR.metallic = 30.0;
+        copperPBR.roughness = 0.5;
+        copperPBR.reflectivityTexture.wAng =80;
+        copperPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        copperPBR.bumpTexture.vAng = 80;
+        copperPBR.bumpTexture.wAng = 100;
+        copperPBR.bumpTexture.level=0.1;
+       
+
+        var black = new BABYLON.StandardMaterial("black", scene);
+        black.diffuseColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+        black.bumpTexture = new BABYLON.Texture("./NormalMap.png", scene);
+        black.bumpTexture.vAng = 70;
+        black.bumpTexture.wAng = 90;
+        black.useParallax = true;
+        black.useParallaxOcclusion = true;
+        black.parallaxScaleBias = 0.01;
+        black.specularPower = 2000.0;
+
+        var blackPBR = new BABYLON.PBRMaterial("pbr", scene);
+        blackPBR.albedoColor = new BABYLON.Color3(1.0, 0.766, 0.336);
+        blackPBR.reflectivityColor = new BABYLON.Color3(1.0, 0.766, 0.336);
+        blackPBR.metallic = 1.0;
+        blackPBR.roughness = 0.1;
+        blackPBR.bumpTexture = new BABYLON.Texture("./nm2.png", scene);
+        blackPBR.bumpTexture.vAng = 70;
+        blackPBR.bumpTexture.wAng = 90;
+        blackPBR.bumpTexture.level = 1;
+     /*       blackPBR.backFaceCulling = true;
+        blackPBR.reflectionTexture = new BABYLON.CubeTexture("./cube", scene);
+        blackPBR.reflectionTexture.coordinatesMode =BABYLON.Texture.PLANAR_MODE;
+        blackPBR.reflectionTexture.level=0.0005;*/
+        
+
+        var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        var bodyMain = BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:2, diameterTop:0.9,diameterBottom:0.8,tessellation: 32}, scene); 
+        bodyMain.lookAt(new BABYLON.Vector3(0,90,0));
+        globMeshes=new Array();
+        globCuts= new Array();
+        if(getParameterByName('dotest')==1)
+        {
+              bodyMain.material=blackPBR;
+              var filling =  BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.5,diameterTop:0.6,diameterBottom:0.6,tessellation: 32}, scene); 
+              filling.lookAt(new BABYLON.Vector3(0,90,0));
+              filling.material = pvhPBR;
+              filling.position.x=filling.position.x+1;
+              filling.position.y=filling.position.y-0.05;
+            
+              for(i=0;i<parseInt(getParameterByName('c'));i++)
+              {
+                  if(parseInt(getParameterByName('c'))<3){
+                      console.log('1');
+                   diamMod=3.5-parseInt(getParameterByName('c'));
+                   globMeshes[i]=BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.5,diameterTop:(0.1*diamMod),diameterBottom:(0.1*diamMod),tessellation: 32}, scene); 
+                   globCuts[i]=BABYLON.MeshBuilder.CreateCylinder("bodyMainCut", {height:0.9,diameterTop:(0.08*diamMod),diameterBottom:(0.08*diamMod),tessellation: 32}, scene);
+                  x_oncircle = 0 +  (0.1 * Math.cos((10*i)));
+                  y_oncircle = 0 +  (0.1 * Math.sin((10*i)));
+                  }else
+                  {
+                      diam='0.0'+parseInt(getParameterByName('c'));
+                      diam=parseFloat(diam);
+                      if(diam<0.02)
+                      {
+                          diam=0.07;    
+                      }            
+                      console.log(diam);
+                   globMeshes[i]=BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.3,diameterTop:0.16-diam,diameterBottom:0.16-diam,tessellation: 32}, scene);
+                   globCuts[i]=BABYLON.MeshBuilder.CreateCylinder("bodyMainCut", {height:0.6,diameterTop:0.13-diam,diameterBottom:0.13-diam,tessellation: 32}, scene);
+                  x_oncircle = 0 +  (0.16 * Math.cos((10*i)));
+                  y_oncircle = 0 +  (0.16 * Math.sin((10*i)));
+                  }
+                  if(parseInt(getParameterByName('c'))<5){
+                  globMeshes[i].position.y=x_oncircle;
+                  globMeshes[i].position.z=y_oncircle;
+                  globCuts[i].position.y=x_oncircle;
+                  globCuts[i].position.z=y_oncircle;
+                  }
+                  else
+                  {
+                    if(isEven(i)){   
+                    globMeshes[i].position.y=x_oncircle;
+                    globCuts[i].position.y=x_oncircle;
+                     }
+                    else
+                    {
+                        globMeshes[i].position.y=x_oncircle-0.113;
+                        globCuts[i].position.y=x_oncircle-0.113;
+                    }
+                  globMeshes[i].position.z=y_oncircle;
+                   globCuts[i].position.z=y_oncircle;
+                  }
+                  globMeshes[i].position.x=bodyMain.position.x+1.3;
+                  globCuts[i].position.x=bodyMain.position.x+1.3;
+                  globMeshes[i].lookAt(new BABYLON.Vector3(0,90,0));
+                  globCuts[i].lookAt(new BABYLON.Vector3(0,90,0));
+                  
+                  if(i==0)
+                  {
+                      globMeshes[i].material=plusLinePBR;
+                  }
+                  if(i==1)
+                  {
+                      globMeshes[i].material=nullLinePBR;
+                  }
+                  
+                  if(i>2)
+                  {
+                      globMeshes[i].material =pvhPBR;
+                  }
+                  
+                  if(getParameterByName('type')=='alum'){
+                      globCuts[i].material=alumPBR;
+                  }else
+                  {
+                      globCuts[i].material=copperPBR;
+                  }
+              }
+
+        }
+        
+        
+        
+         if(getParameterByName('lines')==1){
+          bodyMain.material=blackPBR;   
+             var filling =  BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.5,diameterTop:0.6,diameterBottom:0.6,tessellation: 32}, scene); 
+              filling.lookAt(new BABYLON.Vector3(0,90,0));
+              filling.material = pvhPBR;
+              filling.position.x=filling.position.x+1;
+               var cut = BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cut.position.x=filling.position.x+0.6;
+                cut.lookAt(new BABYLON.Vector3(0,90,0));
+                
+               if(getParameterByName('type')=='alum')
+               {
+               cut.material = alumPBR;
+               }else
+               {
+                cut.material = copperPBR;   
+               }
+               
+         }
+         
+         
+       if(getParameterByName('lines')==2){
+          bodyMain.material=blackPBR;   
+             var filling =  BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.5,diameterTop:0.6,diameterBottom:0.6,tessellation: 32}, scene); 
+              filling.lookAt(new BABYLON.Vector3(0,90,0));
+              filling.material = pvhPBR;
+              filling.position.x=filling.position.x+1;
+               var cutOne = BABYLON.MeshBuilder.CreateCylinder("cutOne", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cutOne.position.x=filling.position.x+0.6;
+                cutOne.position.y=cutOne.position.y+0.12;
+                cutOne.position.z=cutOne.position.z+0.12;
+                cutOne.lookAt(new BABYLON.Vector3(0,90,0));
+                
+               var cutOneCoat = BABYLON.MeshBuilder.CreateCylinder("cutOne", {height:0.6,diameterTop:0.25,diameterBottom:0.25,tessellation: 32}, scene);
+                cutOneCoat.position.x=cutOne.position.x-0.3;
+                cutOneCoat.position.y=cutOneCoat.position.y+0.12;
+                cutOneCoat.position.z=cutOneCoat.position.z+0.1;
+                cutOneCoat.lookAt(new BABYLON.Vector3(0,90,0));
+                cutOneCoat.material= plusLinePBR;
+                
+                var cutTwo = BABYLON.MeshBuilder.CreateCylinder("cutTwo", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cutTwo.position.x=filling.position.x+0.6;
+                cutTwo.position.y=cutTwo.position.y-0.12;
+                cutTwo.position.z=cutTwo.position.z-0.12;
+                cutTwo.lookAt(new BABYLON.Vector3(0,90,0));
+                
+                var cutTwoCoat = BABYLON.MeshBuilder.CreateCylinder("cutTwo", {height:0.6,diameterTop:0.25,diameterBottom:0.25,tessellation: 32}, scene);
+                cutTwoCoat.position.x=cutTwo.position.x-0.3;
+                cutTwoCoat.position.y=cutTwoCoat.position.y-0.12;
+                cutTwoCoat.position.z=cutTwoCoat.position.z-0.1;
+                cutTwoCoat.lookAt(new BABYLON.Vector3(0,90,0));
+                cutTwoCoat.material= nullLinePBR;
+                
+                
+               if(getParameterByName('type')=='alum')
+               {
+               cutOne.material = alumPBR;
+               cutTwo.material = alumPBR;
+               }else
+               {
+                cutOne.material = copperPBR;
+                cutTwo.material = copperPBR; 
+               }
+               
+         }
+         
+            if(getParameterByName('lines')==3){
+          bodyMain.material=blackPBR;   
+             var filling =  BABYLON.MeshBuilder.CreateCylinder("bodyMain", {height:0.5,diameterTop:0.6,diameterBottom:0.6,tessellation: 32}, scene); 
+              filling.lookAt(new BABYLON.Vector3(0,90,0));
+              filling.material = pvhPBR;
+              filling.position.x=filling.position.x+1;
+               var cutOne = BABYLON.MeshBuilder.CreateCylinder("cutOne", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cutOne.position.x=filling.position.x+0.6;
+                cutOne.position.y=cutOne.position.y+0.12;
+                cutOne.position.z=cutOne.position.z+0.12;
+                cutOne.lookAt(new BABYLON.Vector3(0,90,0));
+                
+               var cutOneCoat = BABYLON.MeshBuilder.CreateCylinder("cutOne", {height:0.6,diameterTop:0.25,diameterBottom:0.25,tessellation: 32}, scene);
+                cutOneCoat.position.x=cutOne.position.x-0.3;
+                cutOneCoat.position.y=cutOneCoat.position.y+0.12;
+                cutOneCoat.position.z=cutOneCoat.position.z+0.1;
+                cutOneCoat.lookAt(new BABYLON.Vector3(0,90,0));
+                cutOneCoat.material= plusLinePBR;
+                
+                var cutTwo = BABYLON.MeshBuilder.CreateCylinder("cutTwo", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cutTwo.position.x=filling.position.x+0.6;
+                cutTwo.position.y=cutTwo.position.y-0.12;
+                cutTwo.position.z=cutTwo.position.z-0.03;
+                cutTwo.lookAt(new BABYLON.Vector3(0,90,0));
+                
+                var cutTwoCoat = BABYLON.MeshBuilder.CreateCylinder("cutTwo", {height:0.6,diameterTop:0.25,diameterBottom:0.25,tessellation: 32}, scene);
+                cutTwoCoat.position.x=cutTwo.position.x-0.3;
+                cutTwoCoat.position.y=cutTwoCoat.position.y-0.12;
+                cutTwoCoat.position.z=cutTwoCoat.position.z-0.03;
+                cutTwoCoat.lookAt(new BABYLON.Vector3(0,90,0));
+                cutTwoCoat.material= nullLinePBR;
+                
+                
+                var cutThree = BABYLON.MeshBuilder.CreateCylinder("cutThree", {height:0.8,diameterTop:0.2,diameterBottom:0.2,tessellation: 32}, scene);
+                cutThree.position.x=filling.position.x+0.6;
+                cutThree.position.y=cutThree.position.y+0.12;
+                cutThree.position.z=cutThree.position.z-0.12;
+                cutThree.lookAt(new BABYLON.Vector3(0,90,0));
+                
+                var cutThreeCoat = BABYLON.MeshBuilder.CreateCylinder("cutThreeCoat", {height:0.6,diameterTop:0.23,diameterBottom:0.23,tessellation: 32}, scene);
+                cutThreeCoat.position.x=cutThree.position.x-0.3;
+                cutThreeCoat.position.y=cutThreeCoat.position.y+0.12;
+                cutThreeCoat.position.z=cutThreeCoat.position.z-0.1;
+                cutThreeCoat.lookAt(new BABYLON.Vector3(0,90,0));
+                cutThreeCoat.material= nullLinePBR;
+                
+                
+               if(getParameterByName('type')=='alum')
+               {
+               cutOne.material = alumPBR;
+               cutTwo.material = alumPBR;
+               cutThree.material = alumPBR;
+               }else
+               {
+                cutOne.material = copperPBR;
+                cutTwo.material = copperPBR; 
+                cutThree.material = copperPBR;
+               }
+               
+         }    
+         
+         
+        
+        
+        /*bps = BABYLON.SceneLoader.ImportMesh(["Cylinder01","Cylinder02","Cylinder07"], "./", "cab.obj",  scene, function(meshes, particleSystems, skeletons) {
+                  if(getParameterByName('lines')==1){
+                    scene.meshes.push(meshes[2]);
+                    scene.meshes[1].material=blackPBR;
+                    scene.meshes[0].material=pvhPBR;
+                    if(getParameterByName('type')=='alum'){
+                    scene.meshes[2].material=alumPBR;}
+                    else
+                    {
+                          scene.meshes[2].material=copperPBR;
+                    }
+                    scene.meshes[0].scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
+                    scene.meshes[0].position.x =scene.meshes[1].position.x-5;
+                    scene.meshes[0].position.y = scene.meshes[1].position.y+8;
+                    scene.meshes[0].position.z = scene.meshes[1].position.z+5;
+                    scene.meshes[2].position.y = scene.meshes[1].position.y-4;
+                    scene.meshes[2].position.z = scene.meshes[1].position.x+2;
+                    }
+                    
+                  if(getParameterByName('lines')==2){
+                      console.log(scene.meshes);
+                    scene.meshes.push(meshes[2]);
+                    scene.meshes.push(meshes[2]);
+                    console.log(scene.meshes);
+                    scene.meshes[1].material=blackPBR;
+                    scene.meshes[0].material=pvhPBR;
+                    if(getParameterByName('type')=='alum'){
+                    scene.meshes[2].material=alumPBR;}
+                    else
+                    {
+                          scene.meshes[2].material=copperPBR;
+                    }
+                    
+                    scene.meshes[0].scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
+                    scene.meshes[0].position.x =scene.meshes[1].position.x-5;
+                    scene.meshes[0].position.y = scene.meshes[1].position.y+8;
+                    scene.meshes[0].position.z = scene.meshes[1].position.z+5;
+                    scene.meshes[2].position.y = scene.meshes[1].position.y-4;
+                    scene.meshes[2].position.z = scene.meshes[1].position.x+2;
+                    scene.meshes[4].position.y = scene.meshes[2].position.y-40;
+                    scene.meshes[4].position.z = scene.meshes[2].position.x+2;
+                    scene.meshes[4].position.y = scene.meshes[2].position.y-40;
+                        scene.meshes[4].position.z = scene.meshes[2].position.x+2;
+                    }
+                    
+                    
+                });
+        
+        */
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+/*
+        var button = BABYLON.GUI.Button.CreateSimpleButton("but", "Click Me");
+        button.width = 0.1;
+        button.height = "40px";
+        button.top="200px";
+        button.left="-200px";
+        button.color = "white";
+        button.background = "green";
+
+        var cab1cut = BABYLON.GUI.Button.CreateSimpleButton("but1Cut", "1Cut");
+        cab1cut.width = 0.1;
+        cab1cut.height = "40px";
+        cab1cut.top="200px";
+        cab1cut.color = "white";
+        cab1cut.background = "green";
+
+            button.onPointerUpObservable.add(function() {
+                if(scene.meshes.length>1)
+                {
+                   scene.meshes=new Array();             
+                 }
+              BABYLON.SceneLoader.ImportMesh(["Cylinder01","Cylinder02", "Cylinder07", "Cylinder08", "Cylinder09", "Cylinder10", "Cylinder11", "Cylinder12", "Cylinder13", "Cylinder14", "Cylinder15", "Cylinder16"], "./", "cab.obj", scene, function(meshes, particleSystems, skeletons) {
+                    meshes[0].material = blackPBR;
+                    meshes[1].material = blackPBR;
+                    meshes[6].material = copperPBR;
+                    meshes[7].material = copperPBR;
+                    meshes[8].material = copperPBR;
+                    meshes[9].material = copperPBR;
+                    meshes[11].material = copperPBR;
+                });
+
+            });
+
+            cab1cut.onPointerUpObservable.add(function() {
+                scene.meshes=new Array();
+               bps = BABYLON.SceneLoader.ImportMesh(["Cylinder01","Cylinder02","Cylinder07"], "./", "cab.obj", scene, function(meshes, particleSystems, skeletons) {
+                  if(getParameterByName('lines')==1){
+                    scene.meshes.push(meshes[2]);
+                    scene.meshes[1].material=blackPBR;
+                    scene.meshes[0].material=pvhPBR;
+                    if(getParameterByName('type')=='alum'){
+                    scene.meshes[2].material=alumPBR;}
+                    else
+                    {
+                          scene.meshes[2].material=copperPBR;
+                    }
+                    scene.meshes[0].scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
+                    scene.meshes[0].position.x =scene.meshes[1].position.x-5;
+                    scene.meshes[0].position.y = scene.meshes[1].position.y+8;
+                    scene.meshes[0].position.z = scene.meshes[1].position.z+5;
+                    scene.meshes[2].position.y = scene.meshes[1].position.y-4;
+                    scene.meshes[2].position.z = scene.meshes[1].position.x+2;
+                    }
+                    
+                  if(getParameterByName('lines')==2){
+                      console.log(scene.meshes);
+                    scene.meshes.push(meshes[2]);
+                    scene.meshes.push(meshes[2]);
+                    console.log(scene.meshes);
+                    scene.meshes[1].material=blackPBR;
+                    scene.meshes[0].material=pvhPBR;
+                    if(getParameterByName('type')=='alum'){
+                    scene.meshes[2].material=alumPBR;}
+                    else
+                    {
+                          scene.meshes[2].material=copperPBR;
+                    }
+                    
+                    scene.meshes[0].scaling = new BABYLON.Vector3(0.7, 0.7, 0.7);
+                    scene.meshes[0].position.x =scene.meshes[1].position.x-5;
+                    scene.meshes[0].position.y = scene.meshes[1].position.y+8;
+                    scene.meshes[0].position.z = scene.meshes[1].position.z+5;
+                    scene.meshes[2].position.y = scene.meshes[1].position.y-4;
+                    scene.meshes[2].position.z = scene.meshes[1].position.x+2;
+                    scene.meshes[4].position.y = scene.meshes[2].position.y-40;
+                    scene.meshes[4].position.z = scene.meshes[2].position.x+2;
+                    scene.meshes[4].position.y = scene.meshes[2].position.y-40;
+                        scene.meshes[4].position.z = scene.meshes[2].position.x+2;
+                    }
+                    
+                    
+                });
+ 
+            });
+
+
+            advancedTexture.addControl(button);
+            advancedTexture.addControl(cab1cut);
+*/
+        // Append glTF model to scene.
+ /*       BABYLON.SceneLoader.ImportMesh(["Cylinder01", ], "./", "cab.obj", scene, function(meshes, particleSystems, skeletons) {
+        meshes[0].material = blackPBR;
+        scene.createDefaultCameraOrLight(true, true, true);
+        });*/
+       
+       scene.createDefaultCameraOrLight(true, true, true);
+        return scene;
+        };
+
+        // call the createScene function
+        var scene = delayCreateScene();
+
+        // run the render loop
+        engine.runRenderLoop(function() {
+        scene.render();
+        // dCR.render();
+        });
+
+        // the canvas/window resize event handler
+        window.addEventListener('resize', function() {
+        engine.resize();
+        });
+
+        });
+        </script>
+    </body>
+</html>
